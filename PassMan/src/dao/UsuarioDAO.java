@@ -7,10 +7,18 @@ import java.sql.Statement;
 import java.util.Random;
 
 import com.mysql.jdbc.PreparedStatement;
+import com.sun.mail.smtp.DigestMD5;
 
 import conexion.Conexion;
 import modelos.EmailSender;
 import modelos.Usuario;
+import utils.ReallyStrongSecuredPassword;
+
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
+import java.security.spec.InvalidKeySpecException;
+
+import javax.crypto.Cipher;
 
 public class UsuarioDAO extends AbstractDAO {
 
@@ -18,31 +26,41 @@ public class UsuarioDAO extends AbstractDAO {
 	Statement stm;
 	ResultSet rs;
 	Usuario miUsuario;
+	public static String user;
+	public static int iD;
+	Connection con = conectar();
+
 		
 	public UsuarioDAO() {
 		super();
 		stm = null;
 		rs = null;
 		miUsuario = new Usuario();
+		conectar();
+
 	}
 	
-	public boolean pruebaLogin(Usuario miUsuario) {
+	public boolean pruebaLogin(Usuario miUsuario) throws NoSuchAlgorithmException, InvalidKeySpecException {
 		//String miSeudo, String miContra
 		
 		//Conexion miConexion = new Conexion();
 		
 		java.sql.PreparedStatement ps = null;
 		ResultSet rs = null;
-		Connection con = conectar();
 		
-		String sql = "SELECT Username, Password FROM user WHERE Username = ? ";
+		user=null;
+		String sql = "SELECT Password, Username, iD FROM user WHERE Email = ? ";
 		try {
+			ReallyStrongSecuredPassword rsp = new ReallyStrongSecuredPassword();
 			ps = con.prepareStatement(sql);
-			ps.setString(1, miUsuario.getUsername());
+			ps.setString(1, miUsuario.getEmail());
 			rs = ps.executeQuery();
 			
 			if(rs.next()) {
-				if (miUsuario.getPassword().equals(rs.getString(2))) {
+				if (rsp.validatePassword(miUsuario.getPassword(), (rs.getString(1)))) {
+					user = rs.getString(2);
+					iD = rs.getInt(3);
+					System.out.println(rs.getString(2));
 					return true;
 				}else {
 					return false;
@@ -82,24 +100,26 @@ public class UsuarioDAO extends AbstractDAO {
         return password;
 	}
 	
-	public boolean registrarUsuario(String user, String email) {
+	public boolean registrarUsuario(String email, String password, String username) {
 		PreparedStatement pr;
-		Connection con = conectar();
 		EmailSender myEmailSender = new EmailSender();
 		try {
-			String password = String.copyValueOf(generatePass());
-			pr = (PreparedStatement) super.cn.prepareStatement("insert into user" + "(username,password) values(?,?);");
-			pr.setString(1, user);
-			pr.setString(2,password);
+			ReallyStrongSecuredPassword rsp = new ReallyStrongSecuredPassword();
+			pr = (PreparedStatement) super.cn.prepareStatement("insert into user" + "(email,password,username) values(?,?,?);");
+			pr.setString(1,email);
+			pr.setString(2,rsp.generateStorngPasswordHash(password));
+			pr.setString(3,username);
 			pr.executeUpdate();
-			myEmailSender.sendAnEmail(email, password);
+			myEmailSender.sendAnEmail(email);
 			return true;
 		}
-		catch (SQLException e) {
+		catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
 			e.printStackTrace();
 			return false;
 		}
 	}
+	
+	
 	
 	public boolean isPasswordCorrect (char[] j1,char[] j2) {
 		boolean valor = false;
@@ -120,6 +140,9 @@ public class UsuarioDAO extends AbstractDAO {
 		return valor;
 		}
 	
+	public String getUser() {
+		return user;
 	
+	}
 	
 }

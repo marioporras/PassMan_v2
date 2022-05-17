@@ -4,6 +4,7 @@ import javax.swing.JFrame;
 import javax.swing.JTextField;
 import javax.swing.JPasswordField;
 import java.awt.Font;
+import java.awt.HeadlessException;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
@@ -47,22 +48,25 @@ import javax.swing.border.EmptyBorder;
 import java.awt.Dialog.ModalExclusionType;
 import javax.swing.JEditorPane;
 import javax.swing.JFormattedTextField;
+import javax.swing.border.MatteBorder;
 
 public class LoginView extends JFrame implements ActionListener  {
 	private JTextField textField;
 	private JPasswordField passwordField;
+	//static String user;
 	
 	 public void CentrarJFrame(){
 	      Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 	      int height = pantalla.height;
 	      int width = pantalla.width;
-	      setSize(644, 384);		
+	      setSize(720, 399);		
 
 	      setLocationRelativeTo(null);		
 	      setVisible(true);
 	  }
 	
 	public LoginView() {
+		setUndecorated(true);
 		setTitle("Login");
 		getContentPane().setBackground(Color.BLACK);
 		getContentPane().setLayout(null);
@@ -72,56 +76,58 @@ public class LoginView extends JFrame implements ActionListener  {
 		JPanel panel = new JPanel();
 		panel.setBorder(null);
 		panel.setForeground(new Color(0, 0, 0));
-		panel.setBackground(new Color(255, 255, 255));
-		panel.setBounds(0, 0, 642, 473);
+		panel.setBackground(Color.WHITE);
+		panel.setBounds(0, 0, 720, 399);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("");
-		lblNewLabel.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 18));
-		lblNewLabel.setIcon(new ImageIcon(LoginView.class.getResource("/assets/barthomesmall_preview_rev_1.png")));
-		lblNewLabel.setBounds(0, 0, 638, 346);
-		panel.add(lblNewLabel);
-		
 		JPanel panel_1 = new JPanel();
+		panel_1.setOpaque(false);
 		panel_1.setLayout(null);
 		panel_1.setBorder(new EmptyBorder(0, 0, 0, 0));
-		panel_1.setBackground(new Color(255, 255, 255));
-		panel_1.setBounds(238, 22, 306, 293);
+		panel_1.setBackground(Color.BLACK);
+		panel_1.setBounds(214, 62, 292, 284);
 		panel.add(panel_1);
 		
-		JLabel lblNewLabel_1 = new JLabel("Enter username:");
+		JLabel lblNewLabel_1 = new JLabel("Enter email:");
 		lblNewLabel_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1.setForeground(new Color(102, 102, 102));
+		lblNewLabel_1.setForeground(new Color(0, 0, 0));
 		lblNewLabel_1.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		lblNewLabel_1.setBackground(Color.WHITE);
-		lblNewLabel_1.setBounds(85, 54, 135, 25);
+		lblNewLabel_1.setBounds(85, 29, 135, 25);
 		panel_1.add(lblNewLabel_1);
 		
 		JLabel lblNewLabel_1_1 = new JLabel("Enter password:");
 		lblNewLabel_1_1.setHorizontalAlignment(SwingConstants.CENTER);
-		lblNewLabel_1_1.setForeground(new Color(102, 102, 102));
+		lblNewLabel_1_1.setForeground(new Color(0, 0, 0));
 		lblNewLabel_1_1.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		lblNewLabel_1_1.setBackground(Color.WHITE);
-		lblNewLabel_1_1.setBounds(85, 126, 136, 25);
+		lblNewLabel_1_1.setBounds(85, 117, 136, 25);
 		panel_1.add(lblNewLabel_1_1);
 		
 		JButton btnNo_1 = new JButton("Register now");
+		btnNo_1.setForeground(Color.LIGHT_GRAY);
+		btnNo_1.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent e) {
+				RegisterView frame = new RegisterView();
+				frame.setLocationRelativeTo(null);
+				frame.setVisible(true);
+			}
+		});
 		btnNo_1.setFont(new Font("Yu Gothic UI", Font.BOLD, 11));
 		btnNo_1.setFocusPainted(false);
 		btnNo_1.setContentAreaFilled(false);
-		btnNo_1.setBorderPainted(false);
-		btnNo_1.setBorder(null);
+		btnNo_1.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		btnNo_1.setBackground(Color.WHITE);
-		btnNo_1.setBounds(108, 245, 89, 25);
+		btnNo_1.setBounds(108, 234, 89, 25);
 		panel_1.add(btnNo_1);
 		
 		JButton btnNo_2 = new JButton("Log in");
+		btnNo_2.setForeground(Color.LIGHT_GRAY);
 		btnNo_2.setFont(new Font("Yu Gothic UI", Font.BOLD, 11));
-		//btnNo_2.setFocusPainted(false);
-		//btnNo_2.setContentAreaFilled(false);
-		//btnNo_2.setBorderPainted(false);
-		btnNo_2.setBorder(null);
+		btnNo_2.setFocusPainted(false);
+		btnNo_2.setContentAreaFilled(false);
+		btnNo_2.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		btnNo_2.setBackground(Color.WHITE);
 		btnNo_2.setBounds(108, 198, 89, 25);
 		panel_1.add(btnNo_2);
@@ -134,21 +140,36 @@ public class LoginView extends JFrame implements ActionListener  {
 				String contra = new String(passwordField.getPassword());
 				
 				if(!passwordField.getPassword().toString().contentEquals("") && !contra.contentEquals("")) {
-					miUsuario.setUsername(textField.getText());
+					miUsuario.setEmail(textField.getText());
 					miUsuario.setPassword(contra);
 					
-					if(miUsuarioDAO.pruebaLogin(miUsuario)) {
-						
-						JOptionPane.showMessageDialog(null, "Logeado correctamente");
-						//VentanaJefeMecanicos menu = new VentanaJefeMecanicos(); 
-						//menu.setVisible(true);
-						//menu.setExtendedState(JFrame.MAXIMIZED_BOTH); 
-						//LoginJefeMecanico.this.setVisible(false);
+					try {
+						if(miUsuarioDAO.pruebaLogin(miUsuario)) {
+							try {
+								System.out.println(UsuarioDAO.user);
+								JOptionPane.showMessageDialog(null, "Logeado correctamente");
+								TreeView menu = new TreeView(); 
+								menu.setLocationRelativeTo(null);
+								dispose();
+								menu.setVisible(true);
+							}catch(Exception ex) {
+								
+							}
+							
+							//menu.setExtendedState(JFrame.MAXIMIZED_BOTH); 
+							//LoginJefeMecanico.this.setVisible(false);
 
-						
-					}else {
-						JOptionPane.showMessageDialog(null, "Contraseña o usuario incorrectamente");
+							
+						}else {
+							JOptionPane.showMessageDialog(null, "Contraseña o usuario incorrectamente");
 
+						}
+					} catch (HeadlessException e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
+					} catch (Exception e1) {
+						// TODO Auto-generated catch block
+						e1.printStackTrace();
 					}
 					}else { 					
 						JOptionPane.showMessageDialog(null, "Contraseña o usuario incorrectamente");
@@ -160,21 +181,50 @@ public class LoginView extends JFrame implements ActionListener  {
 				
 		});
 		
-		
-		JLabel lblNewLabel_2 = new JLabel("ARE YOU SURE YO WANT TO PASS?");
-		lblNewLabel_2.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
-		lblNewLabel_2.setBounds(2, 0, 302, 17);
-		panel_1.add(lblNewLabel_2);
-		
 		textField = new JTextField();
+		textField.setBackground(new Color(255, 255, 204));
 		textField.setColumns(10);
-		textField.setBounds(110, 90, 86, 25);
+		textField.setBounds(51, 65, 204, 25);
 		panel_1.add(textField);
 		
 		
 		passwordField = new JPasswordField();
-		passwordField.setBounds(110, 162, 87, 25);
+		passwordField.setBounds(85, 153, 135, 25);
 		panel_1.add(passwordField);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon(LoginView.class.getResource("/assets/Fondo_Login_Register_View.PNG")));
+		lblNewLabel.setBounds(0, 0, 720, 398);
+		panel.add(lblNewLabel);
+		
+		JButton btnCerrar = new JButton("");
+		btnCerrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
+		btnCerrar.setToolTipText("cerrar");
+		btnCerrar.setFont(new Font("Yu Gothic UI", Font.BOLD, 11));
+		btnCerrar.setFocusPainted(false);
+		btnCerrar.setContentAreaFilled(false);
+		btnCerrar.setBounds(656, 11, 54, 43);
+		panel.add(btnCerrar);
+		
+		JButton btnAtras = new JButton("");
+		btnAtras.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				FirstView frame;
+				frame = new FirstView();
+				frame.setLocationRelativeTo(null);
+				frame.setVisible(true);
+			}
+		});
+		btnAtras.setToolTipText("atras");
+		btnAtras.setFont(new Font("Yu Gothic UI", Font.BOLD, 11));
+		btnAtras.setFocusPainted(false);
+		btnAtras.setContentAreaFilled(false);
+		btnAtras.setBounds(592, 11, 54, 43);
+		panel.add(btnAtras);
 		
 		
 		
@@ -187,22 +237,7 @@ public class LoginView extends JFrame implements ActionListener  {
 				
 	}
 	
-	public static void main(String[] args) {
-		EventQueue.invokeLater(new Runnable() {
-			public void run() {
-				try {
-					//launch(args);
-					
-					LoginView frame = new LoginView();
-					frame.setLocationRelativeTo(null);
-					frame.setVisible(true);
-				}
-				catch (Exception e) {
-					e.printStackTrace();
-				}
-			}
-		});
-	}
+	
 	/*
 	public void abrir(ActionEvent e) {
 		String acceso = new String(psdfContrasena.getPassword());		

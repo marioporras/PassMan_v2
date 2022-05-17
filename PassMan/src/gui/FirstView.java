@@ -14,16 +14,19 @@ import java.io.InputStream;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
+import javax.swing.JComponent;
 import javax.swing.SwingConstants;
 import javax.swing.JPanel;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
 import javax.swing.border.LineBorder;
-
+import javax.swing.border.MatteBorder;
 import javax.swing.border.BevelBorder;
 import java.awt.FlowLayout;
 import java.awt.BorderLayout;
+
+import javax.swing.BorderFactory;
 import javax.swing.ImageIcon;
 import java.awt.SystemColor;
 import javax.swing.JTextPane;
@@ -49,30 +52,36 @@ public class FirstView extends JFrame implements ActionListener  {
 	      Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 	      int height = pantalla.height;
 	      int width = pantalla.width;
-	      setSize(644, 384);		
+	      setSize(720, 399);		
 
 	      setLocationRelativeTo(null);		
 	      setVisible(true);
 	  }
 	
 	public FirstView() {
-		setTitle("Login");
-		getContentPane().setBackground(Color.BLACK);
+		//setTitle("Login");
+		setUndecorated(true);
+		getContentPane().setBackground(Color.white);
 		getContentPane().setLayout(null);
-		
+		((JComponent) getContentPane()).setBorder(new LineBorder ((Color) new Color(225, 225, 225)));
 		CentrarJFrame();
 		
 		JPanel panel = new JPanel();
-		panel.setBorder(null);
+		panel.setBorder(new LineBorder(Color.WHITE));
 		panel.setForeground(new Color(0, 0, 0));
 		panel.setBackground(Color.WHITE);
-		panel.setBounds(0, 0, 640, 473);
+		panel.setBounds(0, 0, 720, 399);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
-		JLabel lblNewLabel = new JLabel("New label");
-		lblNewLabel.setIcon(new ImageIcon(FirstView.class.getResource("/assets/PassMan (1)chico.png")));
-		lblNewLabel.setBounds(356, 57, 306, 319);
+		JLabel logo = new JLabel("");
+		logo.setIcon(null);
+		logo.setBounds(10, 312, 33, 61);
+		panel.add(logo);
+		
+		JLabel lblNewLabel = new JLabel("");
+		lblNewLabel.setIcon(new ImageIcon(FirstView.class.getResource("/assets/Fondo_2_FirstView.PNG")));
+		lblNewLabel.setBounds(0, 0, 724, 400);
 		panel.add(lblNewLabel);
 		
 		JButton btnNo_1_1 = new JButton("");
@@ -92,14 +101,8 @@ public class FirstView extends JFrame implements ActionListener  {
 		btnNo_1_1.setBorderPainted(false);
 		btnNo_1_1.setBorder(null);
 		btnNo_1_1.setBackground(Color.WHITE);
-		btnNo_1_1.setBounds(0, 0, 630, 345);
+		btnNo_1_1.setBounds(0, 0, 724, 400);
 		panel.add(btnNo_1_1);
-		
-		JLabel lblNewLabel_1 = new JLabel("CLICK ANYWHERE");
-		lblNewLabel_1.setForeground(new Color(211, 211, 211));
-		lblNewLabel_1.setFont(new Font("Yu Gothic UI", Font.BOLD, 13));
-		lblNewLabel_1.setBounds(243, 139, 132, 23);
-		panel.add(lblNewLabel_1);
 		;
 		Dimension pantallaTamano = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension tamano = (pantallaTamano);

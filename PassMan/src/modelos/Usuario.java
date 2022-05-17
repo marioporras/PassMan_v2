@@ -2,12 +2,12 @@ package modelos;
 
 public class Usuario {
 	
-	private String username;
+	private String email;
 	private String password;
 	
 	public Usuario(String username, String password) {
 		super();
-		this.username = username;
+		this.email = username;
 		this.password = password;
 	}
 	
@@ -16,12 +16,12 @@ public class Usuario {
 		
 	}
 
-	public String getUsername() {
-		return username;
+	public String getEmail() {
+		return email;
 	}
 
-	public void setUsername(String username) {
-		this.username = username;
+	public void setEmail(String username) {
+		this.email = username;
 	}
 
 	public String getPassword() {
