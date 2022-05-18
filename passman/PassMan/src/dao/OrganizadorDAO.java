@@ -7,19 +7,11 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.Random;
-
-import javax.swing.DefaultListModel;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.ListSelectionModel;
 import javax.swing.tree.DefaultMutableTreeNode;
-
-import gui.JLabelLink;
-import gui.MyAESUtil;
-import modelos.EmailSender;
+import utils.JLabelLink;
 import modelos.Organizador;
-import modelos.Usuario;
 import utils.AES;
 
 public class OrganizadorDAO extends AbstractDAO {
@@ -37,7 +29,10 @@ public class OrganizadorDAO extends AbstractDAO {
 		miOrganizador = new Organizador();
 	}
 	
-	
+	/**
+	 * Metodo que devuelve todos los datos de la tabla organizador
+	 * @return
+	 */
 	public ArrayList<Organizador> mostrarDatos() {
 		try {
 			String sql = "SELECT titulo,correo,username,password,sitioweb FROM organizador";
@@ -167,6 +162,12 @@ public class OrganizadorDAO extends AbstractDAO {
         } 
         return password;
 	}
+	
+	/**
+	 * Comportamiento para llenar de datos un combobox
+	 * @param miCombo
+	 * @throws SQLException
+	 */
 	
 	public void llenarCombo(JComboBox miCombo) throws SQLException {
 		String sql = "SELECT * FROM categorias";

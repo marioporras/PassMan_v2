@@ -5,21 +5,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
-
 import com.mysql.jdbc.PreparedStatement;
-import com.sun.mail.smtp.DigestMD5;
-
-import conexion.Conexion;
-import gui.MyAESUtil;
-import modelos.EmailSender;
+import utils.EmailSender;
 import modelos.Usuario;
 import utils.ReallyStrongSecuredPassword;
-
-import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 import java.security.spec.InvalidKeySpecException;
-
-import javax.crypto.Cipher;
 
 public class UsuarioDAO extends AbstractDAO {
 

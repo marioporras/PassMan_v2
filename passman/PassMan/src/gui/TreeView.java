@@ -4,6 +4,8 @@ import java.awt.EventQueue;
 import java.awt.Font;
 import java.awt.Rectangle;
 import java.awt.Toolkit;
+import java.awt.datatransfer.StringSelection;
+import java.awt.datatransfer.Transferable;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
@@ -12,9 +14,6 @@ import java.sql.DriverManager;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Objects;
-
-import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JFrame;
@@ -22,24 +21,19 @@ import javax.swing.JLabel;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeCellRenderer;
 import javax.swing.JPanel;
-import java.awt.BorderLayout;
+import javax.swing.JScrollPane;
 import java.awt.Color;
 import java.awt.Dimension;
 import javax.swing.JTree;
-import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
-
-import com.mysql.jdbc.Connection;
-import com.mysql.jdbc.Statement;
-
 import conexion.Conexion;
-import dao.OrganizadorDAO;
 import dao.UsuarioDAO;
 import utils.AES;
-
-import javax.swing.JTextField;
+import utils.JLabelLink;
+import utils.Scrapping;
 import javax.swing.border.MatteBorder;
+import javax.swing.plaf.basic.BasicScrollBarUI;
 
 public class TreeView extends JFrame{
 	private java.sql.Connection cn;
@@ -55,42 +49,43 @@ public class TreeView extends JFrame{
 	private String password; 
 	private String sitioweb;							
 	private String cuenta;
-	private int ver;
+	private int ver = 0;
+	private Scrapping miScrap = new Scrapping();
+	private int scrappingNumber = 2;
 	
 	public void CentrarJFrame(){
 	      Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
 	      int height = pantalla.height;
 	      int width = pantalla.width;
-	      setSize(670, 384);		
+	      setSize(720, 399);		
 	      setLocationRelativeTo(null);		
 	      setVisible(true);
 	  }
 	
 	public TreeView() throws SQLException {
-		//setTitle("Login");
-		setUndecorated(true);
-
-		getContentPane().setBackground(Color.BLACK);
-		getContentPane().setLayout(null);
 		
+		setUndecorated(true);
+		getContentPane().setBackground(Color.white);
+		getContentPane().setLayout(null);
 		CentrarJFrame();
 		
 		JPanel panel = new JPanel();
 		panel.setBorder(null);
 		panel.setForeground(new Color(0, 0, 0));
 		panel.setBackground(Color.WHITE);
-		panel.setBounds(0, 0, 670, 384);
+		panel.setBounds(0, 0, 720, 399);
 		getContentPane().add(panel);
 		panel.setLayout(null);
 		
 		JPanel panel_1 = new JPanel();
 		panel_1.setBackground(Color.WHITE);
-		panel_1.setBounds(0, 0, 669, 383);
+		panel_1.setBounds(0, 0, 722, 399);
 		panel.add(panel_1);
 		panel_1.setLayout(null);
 		
 		DefaultMutableTreeNode passman=new DefaultMutableTreeNode("PassMan");
 		JTree jt=new JTree(passman);
+		jt.setBorder(null);
 		Rectangle r = new Rectangle(0, 0, 0, 0);
 		jt.computeVisibleRect(r);
 		jt.setShowsRootHandles(true);
@@ -101,16 +96,29 @@ public class TreeView extends JFrame{
 		jt.setBackground(Color.BLACK);
 		jt.setSize(194, 218);
 		jt.setLocation(158, 54);
-		panel_1.add(jt);
+		jt.setScrollsOnExpand(true);
 		
-		// Get the tree's cell renderer. If it is a default
-		// cell renderer, customize it.
+		JScrollPane scroll = new JScrollPane(jt);
+		scroll.setOpaque(false);
+		scroll.getViewport().setOpaque(false);
+		scroll.setBounds(148, 54, 194, 198);
+		scroll.setBackground(Color.black);
+		/*
+		scroll.getVerticalScrollBar().setUI(new BasicScrollBarUI() {
+			@Override
+			protected void configureScrollBarColors() {
+				this.thumbColor = Color.BLACK;
+			}
+		});
+		*/
+		panel_1.add(scroll);
+		
+
 		TreeCellRenderer cr = jt.getCellRenderer();
 		if (cr instanceof DefaultTreeCellRenderer) {
 		  DefaultTreeCellRenderer dtcr =
 		               (DefaultTreeCellRenderer)cr; 
 
-		  // Set the various colors
 		  dtcr.setBackgroundNonSelectionColor(null);
 		  dtcr.setBackgroundSelectionColor(Color.gray);
 		  dtcr.setTextSelectionColor(Color.red); 
@@ -123,20 +131,21 @@ public class TreeView extends JFrame{
 	               // this.getClass().getResource("/images/lightning.png")));
 		  //dtcr.setLeafIcon(closedIcon); 
 
-		  // Finally, set the tree's background color 
 		  jt.setBackground(Color.black); 
 		} 
 	
 		
 		lblNewLabel_1 = new JLabel("");
+		lblNewLabel_1.setForeground(Color.WHITE);
 		lblNewLabel_1.setBackground(Color.BLACK);
 		lblNewLabel_1.setBounds(353, 53, 226, 218);
 		panel_1.add(lblNewLabel_1);
 		
-		JButton btnNo_1_1_1 = new JButton("Guardar nueva cuenta/crear categoria");
-		btnNo_1_1_1.setBounds(213, 283, 204, 51);
-		panel_1.add(btnNo_1_1_1);
-		btnNo_1_1_1.addActionListener(new ActionListener() {
+		JButton btnCrear = new JButton("Guardar nueva cuenta/crear categoria");
+		btnCrear.setForeground(Color.LIGHT_GRAY);
+		btnCrear.setBounds(259, 283, 204, 51);
+		panel_1.add(btnCrear);
+		btnCrear.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
 				CreateSSpaceView menu = new CreateSSpaceView(); 
 				menu.setLocationRelativeTo(null);
@@ -144,20 +153,59 @@ public class TreeView extends JFrame{
 				menu.setVisible(true);
 			}
 		});
-		btnNo_1_1_1.setFont(new Font("Yu Gothic UI", Font.BOLD, 11));
-		btnNo_1_1_1.setFocusPainted(false);
-		btnNo_1_1_1.setContentAreaFilled(false);
-		btnNo_1_1_1.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
-		btnNo_1_1_1.setBackground(Color.WHITE);
+		btnCrear.setFont(new Font("Yu Gothic UI", Font.BOLD, 11));
+		btnCrear.setFocusPainted(false);
+		btnCrear.setContentAreaFilled(false);
+		btnCrear.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		btnCrear.setBackground(Color.WHITE);
+		
+		JButton btnScrapper = new JButton("");
+		btnScrapper.setToolTipText("notificar cambios en la pagina web por medio del correo de esta cuenta");
+		btnScrapper.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				miScrap.interrupt();
+				if (scrappingNumber % 2 == 0) {
+					scrappingNumber++;
+					miScrap.scrap(correo,sitioweb);
+				}else {
+					System.out.println("Apagado");
+				}
+			}
+		});
+		btnScrapper.setFont(new Font("Yu Gothic UI", Font.BOLD, 11));
+		btnScrapper.setFocusPainted(false);
+		btnScrapper.setContentAreaFilled(false);
+		btnScrapper.setBounds(658, 212, 54, 35);
+		panel_1.add(btnScrapper);
+		
+		JButton btnCopiarC = new JButton("");
+		btnCopiarC.setToolTipText("copiar contrase\u00F1a");
+		btnCopiarC.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+			String password_decrypt = AES.decrypt(password, "patrondelmal");
+			Toolkit.getDefaultToolkit()
+	        .getSystemClipboard()
+	        .setContents(
+	                (Transferable) new StringSelection(password_decrypt),
+	                null
+	        );
+			}
+		});
+		btnCopiarC.setFont(new Font("Yu Gothic UI", Font.BOLD, 11));
+		btnCopiarC.setFocusPainted(false);
+		btnCopiarC.setContentAreaFilled(false);
+		btnCopiarC.setBounds(658, 168, 54, 43);
+		panel_1.add(btnCopiarC);
 		
 		
 		JLabel lblNewLabel_2 = new JLabel("New label");
-		lblNewLabel_2.setBounds(77, 352, 158, 20);
+		lblNewLabel_2.setForeground(Color.LIGHT_GRAY);
+		lblNewLabel_2.setBounds(23, 365, 150, 23);
 		panel_1.add(lblNewLabel_2);
 		
 		lblNewLabel = new JLabel("New label");
-		lblNewLabel.setIcon(new ImageIcon(TreeView.class.getResource("/assets/fondo_pers.png")));
-		lblNewLabel.setBounds(0, 0, 669, 383);
+		lblNewLabel.setIcon(new ImageIcon(TreeView.class.getResource("/assets/Fondo_TreeView.PNG")));
+		lblNewLabel.setBounds(0, 0, 719, 399);
 		panel_1.add(lblNewLabel);
 		
 		panel_1.setVisible(true);
@@ -165,7 +213,6 @@ public class TreeView extends JFrame{
 		Dimension pantallaTamano = Toolkit.getDefaultToolkit().getScreenSize();
 		Dimension tamano = (pantallaTamano);
 		
-		//Tomo el tamaño de la pantalla
 		
 		jt.addMouseListener(new MouseAdapter() {
 			public void mouseClicked(MouseEvent me) {
@@ -202,7 +249,7 @@ public class TreeView extends JFrame{
 								        link.setText(sitioweb);
 								        link.setLink(sitioweb);  
 								        link.setTextLink(sitioweb); 
-								        link.setBounds(1, 156, 200, 40);
+								        link.setBounds(1, 168, 200, 40);
 								        lblNewLabel_1.setText(cuenta);
 								        lblNewLabel_1.add(link);
 								    }
@@ -213,13 +260,14 @@ public class TreeView extends JFrame{
 							
 						}
 					}else {
-						System.out.println("else");
+						System.out.println("nothing");
 					}
 				}
 		});
 		
-		JButton btnNewButton = new JButton("New button");
-		btnNewButton.addActionListener(new ActionListener() {
+		JButton btnDecrypt = new JButton("Decrypt");
+		btnDecrypt.setToolTipText("Ver contrase\u00F1a");
+		btnDecrypt.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent arg0) {
 				if (ver == 0) {
 					String password_decrypt = AES.decrypt(password, "patrondelmal");
@@ -237,6 +285,7 @@ public class TreeView extends JFrame{
 	        lblNewLabel_1.setText(cuenta);
 	        lblNewLabel_1.add(link);
 	        ver = 1;
+			
 				}else {
 					cuenta = "<html><p>Esta es tu cuenta de " + titulo + ":<p>" + 
 	        				"	<p><strong>correo</strong>: "+ correo+"<p>"+
@@ -252,13 +301,46 @@ public class TreeView extends JFrame{
 	        lblNewLabel_1.setText(cuenta);
 	        lblNewLabel_1.add(link);
 	        ver = 0;
-					
+			
 				}
 				
 			}
 		});
-		btnNewButton.setBounds(605, 127, 64, 23);
-		panel_1.add(btnNewButton);
+		btnDecrypt.setBounds(656, 136, 56, 30);
+		btnDecrypt.setFocusPainted(false);
+		btnDecrypt.setContentAreaFilled(false);
+		btnDecrypt.setBorderPainted(false);
+		btnDecrypt.setBorder(null);
+		panel_1.add(btnDecrypt);
+		
+		JButton btnCerrar = new JButton("");
+		btnCerrar.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				System.exit(0);
+			}
+		});
+		btnCerrar.setToolTipText("cerrar");
+		btnCerrar.setFont(new Font("Yu Gothic UI", Font.BOLD, 11));
+		btnCerrar.setFocusPainted(false);
+		btnCerrar.setContentAreaFilled(false);
+		btnCerrar.setBounds(658, 11, 54, 43);
+		panel_1.add(btnCerrar);
+		
+		JButton btnAtras = new JButton("");
+		btnAtras.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				LoginView frame;
+				frame = new LoginView();
+				frame.setLocationRelativeTo(null);
+				frame.setVisible(true);
+			}
+		});
+		btnAtras.setToolTipText("atras");
+		btnAtras.setFont(new Font("Yu Gothic UI", Font.BOLD, 11));
+		btnAtras.setFocusPainted(false);
+		btnAtras.setContentAreaFilled(false);
+		btnAtras.setBounds(598, 11, 54, 43);
+		panel_1.add(btnAtras);
 		
 
 		
@@ -271,6 +353,8 @@ public class TreeView extends JFrame{
 			st=cn.createStatement();
 			rs=st.executeQuery("SELECT organizador.titulo, organizador.categoria from organizador, user where user.iD = organizador.iD and user.id ='"+ UsuarioDAO.iD + "'order by organizador.categoria");
 			lblNewLabel_2.setText(UsuarioDAO.user);
+			
+			
 			ArrayList<Integer> listaIds = new ArrayList<Integer>();
 			String categoriaActual = null;
 			DefaultMutableTreeNode categoria = null;
@@ -308,9 +392,7 @@ public class TreeView extends JFrame{
 	public static void main(String[] args) {
 		EventQueue.invokeLater(new Runnable() {
 			public void run() {
-				try {
-					//launch(args);
-					
+				try {					
 					TreeView frame = new TreeView();
 					frame.setLocationRelativeTo(null);
 					frame.setVisible(true);
