@@ -108,8 +108,6 @@ public class EmailSender {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
 			}
-
-			// A quien va dirigido
 			
 		}
 	}

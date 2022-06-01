@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 
 import org.jsoup.Connection.Response;
 import org.jsoup.Jsoup;
@@ -20,24 +22,32 @@ public class Scrapping extends Thread {
 	 * @param email
 	 * @param url
 	 */
-    public void scrap ( String email, String url) {
-    	int numero = 0;
+    public void scrap ( String email, String url, String titulo) {
+    	//Aquí colocas tu objeto tipo Date
+    	Date myDate = new Date();
+
+    	//Aquí obtienes el formato que deseas
+    	String fecha = new SimpleDateFormat("dd-MM-yyyy").format(myDate);
+    	int numero=0;
     	FileWriter fw;
     	File fileAntiguo = null;
     	File fileActual = null;
-    	while (true) {
-    		 if (getStatusConnectionCode(url) == 200) {
+    	
+    		 if (getStatusConnectionCode(url) == 200 ) {
     				
     	            // Obtengo el HTML de la web en un objeto Document
     	            Document document = getHtmlDocument(url);
     				
     	            try {
-    					fw = new FileWriter("C:\\txt\\webScrapping+ '" + numero + "'.txt",true);
+    					fw = new FileWriter("C:\\txt\\webScrapping\\"+titulo + fecha + ".txt",true);
     					
     					fw.write(document.toString());
     					numero++;
-    					fileActual = new File("C:\\txt\\webScrapping+ '" + numero + "'.txt");
+    					fileActual = new File("C:\\txt\\webScrapping\\" +titulo + fecha + ".txt");
     					fw.close();
+    					File directorio = new File("C:\\txt\\webScrapping");
+    					fileAntiguo = CompareFiles.buscar(titulo , directorio );
+    					
     				} catch (IOException e) {
     					e.printStackTrace();
     				}
@@ -46,19 +56,18 @@ public class Scrapping extends Thread {
     					
     					if(fileAntiguo != null) {
     						CompareFiles.LeerFichero(fileAntiguo, fileActual, email, url);
-        					System.out.println("Se ha consultado la web, tienes nuevos datos");
+        					System.out.println("Se han comparado los ficheros");
 
     					}else {
     						System.out.println("No hay donde comparar");
     						fileAntiguo = fileActual;
     					}
     					fileAntiguo = fileActual;
-    					Thread.sleep(10000);
-    				} catch (InterruptedException e) {
+    				} catch (Exception e) {
     					e.printStackTrace();
     				}
     		 }
-    	}
+    	
     		
     	}
 

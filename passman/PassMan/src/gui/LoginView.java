@@ -60,7 +60,7 @@ public class LoginView extends JFrame implements ActionListener  {
 		
 		JLabel lblEmail = new JLabel("Enter email:");
 		lblEmail.setHorizontalAlignment(SwingConstants.CENTER);
-		lblEmail.setForeground(new Color(0, 0, 0));
+		lblEmail.setForeground(Color.WHITE);
 		lblEmail.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		lblEmail.setBackground(Color.WHITE);
 		lblEmail.setBounds(85, 29, 135, 25);
@@ -68,7 +68,7 @@ public class LoginView extends JFrame implements ActionListener  {
 		
 		JLabel lblPass = new JLabel("Enter password:");
 		lblPass.setHorizontalAlignment(SwingConstants.CENTER);
-		lblPass.setForeground(new Color(0, 0, 0));
+		lblPass.setForeground(Color.WHITE);
 		lblPass.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		lblPass.setBackground(Color.WHITE);
 		lblPass.setBounds(85, 117, 136, 25);
@@ -147,7 +147,7 @@ public class LoginView extends JFrame implements ActionListener  {
 		});
 		
 		textField_email = new JTextField();
-		textField_email.setBackground(new Color(255, 255, 204));
+		textField_email.setBackground(Color.WHITE);
 		textField_email.setColumns(10);
 		textField_email.setBounds(51, 65, 204, 25);
 		panel_1.add(textField_email);

@@ -134,7 +134,7 @@ public class CreateSSpaceView extends JFrame implements ActionListener  {
 		panel_1.add(textField_URL);
 		
 		JButton btnGenerar = new JButton("Generar");
-		btnGenerar.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		btnGenerar.setBorder(null);
 		btnGenerar.setForeground(Color.RED);
 		btnGenerar.addActionListener(new ActionListener() {
 			public void actionPerformed(ActionEvent e) {
@@ -147,7 +147,7 @@ public class CreateSSpaceView extends JFrame implements ActionListener  {
 		btnGenerar.setContentAreaFilled(false);
 		btnGenerar.setBackground(Color.WHITE);
 		btnGenerar.setForeground(Color.BLACK);    
-		btnGenerar.setBounds(301, 208, 73, 25);
+		btnGenerar.setBounds(301, 212, 47, 32);
 		panel_1.add(btnGenerar);
 		
 		JLabel lblUsuario = new JLabel("Usuario");
@@ -214,7 +214,7 @@ public class CreateSSpaceView extends JFrame implements ActionListener  {
 		btnCrear.setFocusPainted(false);
 		btnCrear.setContentAreaFilled(false);
 		btnCrear.setBackground(Color.WHITE);
-		btnCrear.setBounds(348, 343, 59, 25);
+		btnCrear.setBounds(356, 336, 58, 31);
 		panel_1.add(btnCrear);
 		
 		JProgressBar progressBar = new JProgressBar();
@@ -331,7 +331,7 @@ public class CreateSSpaceView extends JFrame implements ActionListener  {
 		btnAtras.setBackground(Color.WHITE);
 		
 		JButton btnGuardar = new JButton("Guardar");
-		btnGuardar.setBounds(615, 298, 95, 25);
+		btnGuardar.setBounds(33, 363, 95, 25);
 		panel.add(btnGuardar);
 		btnGuardar.setFont(new Font("Yu Gothic UI", Font.BOLD, 11));
 		btnGuardar.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
@@ -353,7 +353,7 @@ public class CreateSSpaceView extends JFrame implements ActionListener  {
 		panel.add(btnCerrar);
 		
 		JLabel lblFondo = new JLabel("");
-		lblFondo.setIcon(new ImageIcon(CreateSSpaceView.class.getResource("/assets/Fondo_CreateSpaceView.PNG")));
+		lblFondo.setIcon(new ImageIcon(CreateSSpaceView.class.getResource("/assets/Create22.PNG")));
 		lblFondo.setFont(new Font("Yu Gothic UI Semibold", Font.BOLD, 14));
 		lblFondo.setDisplayedMnemonic(KeyEvent.VK_ENTER);
 		lblFondo.setBounds(0, 0, 722, 400);

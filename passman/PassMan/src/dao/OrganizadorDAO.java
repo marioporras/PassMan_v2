@@ -188,6 +188,12 @@ public class OrganizadorDAO extends AbstractDAO {
 
 	}
 	
+	/**
+	 * Comportamiento que crea categorias en la bbdd
+	 * @param categoria
+	 * @return
+	 * @throws SQLException
+	 */
 	public boolean crearCategoria(String categoria) throws SQLException {
 		PreparedStatement pr;
 		Connection con = conectar();

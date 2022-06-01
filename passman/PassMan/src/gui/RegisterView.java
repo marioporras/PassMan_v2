@@ -7,12 +7,17 @@ import java.awt.Font;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JButton;
 import javax.swing.SwingConstants;
 import javax.swing.Timer;
 import javax.swing.JPanel;
+
+import java.awt.AWTEvent;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.EventQueue;
@@ -21,8 +26,13 @@ import conexion.Conexion;
 import dao.OrganizadorDAO;
 import dao.UsuarioDAO;
 import modelos.Usuario;
+import utils.HasEspecialCharacter;
+
 import javax.swing.border.EmptyBorder;
 import javax.swing.border.MatteBorder;
+
+import com.sun.glass.events.KeyEvent;
+
 import javax.swing.JProgressBar;
 import javax.swing.UIManager;
 
@@ -33,8 +43,12 @@ public class RegisterView extends JFrame implements ActionListener  {
 	private JTextField textField_pass;
 	private static final String EMAIL_PATTERN = 
 		    "^[a-z0-9](\\.?[a-z0-9]){6,30}@gmail\\.com$";
+	private static final String PASS_PATTERN = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=])(?=\\S+$).{8,18}$";
 	private JTextField textField_user;
-
+	private JPasswordField passField_Confirm;
+	private HasEspecialCharacter miHasEspecialCharacter = new HasEspecialCharacter();
+    private int value = 0;
+    private int verPass = 0;
 	
 	 public void CentrarJFrame(){
 	      Dimension pantalla = Toolkit.getDefaultToolkit().getScreenSize();
@@ -66,7 +80,7 @@ public class RegisterView extends JFrame implements ActionListener  {
 		panel_1.setLayout(null);
 		panel_1.setBorder(new EmptyBorder(0, 0, 0, 0));
 		panel_1.setBackground(Color.BLACK);
-		panel_1.setBounds(184, 51, 351, 322);
+		panel_1.setBounds(161, 0, 398, 399);
 		panel.add(panel_1);
 		
 		JLabel lblEmail = new JLabel("Enter email:");
@@ -74,7 +88,7 @@ public class RegisterView extends JFrame implements ActionListener  {
 		lblEmail.setForeground(new Color(204, 204, 204));
 		lblEmail.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		lblEmail.setBackground(Color.WHITE);
-		lblEmail.setBounds(108, 54, 135, 25);
+		lblEmail.setBounds(131, 54, 135, 25);
 		panel_1.add(lblEmail);
 		
 		JLabel lblPass = new JLabel("Enter master password:");
@@ -82,7 +96,7 @@ public class RegisterView extends JFrame implements ActionListener  {
 		lblPass.setForeground(new Color(204, 204, 204));
 		lblPass.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		lblPass.setBackground(Color.WHITE);
-		lblPass.setBounds(70, 200, 210, 25);
+		lblPass.setBounds(94, 200, 210, 25);
 		panel_1.add(lblPass);
 		
 		JButton btnRegistrar = new JButton("Register now");
@@ -92,12 +106,12 @@ public class RegisterView extends JFrame implements ActionListener  {
 		btnRegistrar.setContentAreaFilled(false);
 		btnRegistrar.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
 		btnRegistrar.setBackground(Color.WHITE);
-		btnRegistrar.setBounds(127, 297, 89, 25);
+		btnRegistrar.setBounds(154, 363, 89, 25);
 		panel_1.add(btnRegistrar);
 		
 		textField_email = new JTextField();
 		textField_email.setColumns(10);
-		textField_email.setBounds(78, 90, 195, 25);
+		textField_email.setBounds(101, 90, 195, 25);
 		panel_1.add(textField_email);
 		
 		
@@ -107,9 +121,9 @@ public class RegisterView extends JFrame implements ActionListener  {
 					UsuarioDAO miUsuarioDAO = new UsuarioDAO();
 					Usuario miUsuario = new Usuario();
 					String nombre=textField_email.getText();
-					if (nombre.matches(EMAIL_PATTERN)) {
+					if (nombre.matches(EMAIL_PATTERN) && passField_Confirm.getText().contentEquals(textField_pass.getText()) && textField_pass.getText().matches(PASS_PATTERN)) {
 						miUsuarioDAO.registrarUsuario(textField_email.getText(), textField_pass.getText(), textField_user.getText());
-						JOptionPane.showMessageDialog(null, "Correct registration! Now you can use PassMan");
+						//JOptionPane.showMessageDialog(null, "Correct registration! Now you can use PassMan");
 						FirstView frame = new FirstView();
 						frame.setLocationRelativeTo(null);
 						frame.setVisible(true);
@@ -120,7 +134,15 @@ public class RegisterView extends JFrame implements ActionListener  {
 						
 						
 						}else {
-						JOptionPane.showMessageDialog(null, "Incorrect registration");
+						JOptionPane.showMessageDialog(null, "password must: Have least 8 chars\r\n" + 
+								"\r\n" + 
+								"Contains at least one digit\r\n" + 
+								"\r\n" + 
+								"Contains at least one lower alpha char and one upper alpha char\r\n" + 
+								"\r\n" + 
+								"Contains at least one char within a set of special chars (@#%$^ etc.)\r\n" + 
+								"\r\n" + 
+								"Does not contain space, tab, etc.");
 						}
 					}
 		});
@@ -131,17 +153,18 @@ public class RegisterView extends JFrame implements ActionListener  {
 		JLabel lblWelcome = new JLabel("WELCOME PASSMAN!");
 		lblWelcome.setForeground(Color.WHITE);
 		lblWelcome.setFont(new Font("Yu Gothic UI", Font.BOLD, 20));
-		lblWelcome.setBounds(70, 11, 210, 25);
+		lblWelcome.setBounds(94, 11, 210, 25);
 		panel_1.add(lblWelcome);
+		
 		
 		
 		
 		
 		textField_pass = new JPasswordField();
 		textField_pass.setColumns(10);
-		textField_pass.setBounds(108, 236, 135, 25);
+		textField_pass.setBounds(131, 236, 135, 25);
 		panel_1.add(textField_pass);
-		
+		/*
 		JButton btnGenerar = new JButton("Generate");
 		btnGenerar.setForeground(new Color(204, 204, 204));
 		btnGenerar.addActionListener(new ActionListener() {
@@ -158,9 +181,9 @@ public class RegisterView extends JFrame implements ActionListener  {
 		btnGenerar.setBackground(Color.WHITE);
 		btnGenerar.setBounds(253, 236, 66, 25);
 		panel_1.add(btnGenerar);
-		
+		*/
 		JProgressBar progressBar = new JProgressBar();
-		progressBar.setBounds(102, 272, 146, 14);
+		progressBar.setBounds(126, 272, 146, 14);
 		progressBar.setStringPainted(true);
 		panel_1.add(progressBar);
 		
@@ -169,13 +192,47 @@ public class RegisterView extends JFrame implements ActionListener  {
 		lblUser.setForeground(new Color(204, 204, 204));
 		lblUser.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
 		lblUser.setBackground(Color.WHITE);
-		lblUser.setBounds(108, 127, 135, 25);
+		lblUser.setBounds(131, 127, 135, 25);
 		panel_1.add(lblUser);
 		
 		textField_user = new JTextField();
 		textField_user.setColumns(10);
-		textField_user.setBounds(78, 163, 195, 25);
+		textField_user.setBounds(101, 163, 195, 25);
 		panel_1.add(textField_user);
+		
+		JLabel lblPass_1 = new JLabel("Repeat master password:");
+		lblPass_1.setHorizontalAlignment(SwingConstants.CENTER);
+		lblPass_1.setForeground(new Color(204, 204, 204));
+		lblPass_1.setFont(new Font("Yu Gothic UI", Font.BOLD, 18));
+		lblPass_1.setBackground(Color.WHITE);
+		lblPass_1.setBounds(94, 295, 210, 25);
+		panel_1.add(lblPass_1);
+		
+		passField_Confirm = new JPasswordField();
+		passField_Confirm.setColumns(10);
+		passField_Confirm.setBounds(131, 327, 135, 25);
+		panel_1.add(passField_Confirm);
+		
+		JButton btnSeePassword = new JButton("See password");
+		btnSeePassword.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				if (verPass == 0) {
+					((JPasswordField) textField_pass).setEchoChar((char)0); 
+					verPass = 1;
+				}else {
+					((JPasswordField) textField_pass).setEchoChar('•'); 
+					verPass = 0;
+				}
+			}
+		});
+		btnSeePassword.setForeground(new Color(204, 204, 204));
+		btnSeePassword.setFont(new Font("Yu Gothic UI", Font.BOLD, 11));
+		btnSeePassword.setFocusPainted(false);
+		btnSeePassword.setContentAreaFilled(false);
+		btnSeePassword.setBorder(new MatteBorder(1, 1, 1, 1, (Color) new Color(0, 0, 0)));
+		btnSeePassword.setBackground(Color.WHITE);
+		btnSeePassword.setBounds(9, 235, 89, 25);
+		panel_1.add(btnSeePassword);
 		
 		JLabel lblFondo = new JLabel("");
 		lblFondo.setForeground(new Color(255, 255, 255));
@@ -217,81 +274,41 @@ public class RegisterView extends JFrame implements ActionListener  {
 		Timer t=new Timer(100,new ActionListener(){
             public void actionPerformed(ActionEvent ae)
             {
-            	if (textField_pass.getText().length()<1) {
+            	//miHasEspecialCharacter.hasEspecial("Micontra*seña");
+            	if (textField_pass.getText().length()<=1) {
         			progressBar.setValue(0);
         			progressBar.setForeground(Color.red);
         			progressBar.setString("Muy débil");
-        		}else if(textField_pass.getText().length()<2){
-        			progressBar.setValue(5);
-        			progressBar.setForeground(Color.red);
-        			progressBar.setString("Muy débil");
-        		}else if(textField_pass.getText().length()<3){
-        			progressBar.setValue(10);
-        			progressBar.setForeground(Color.red);
-        			progressBar.setString("Muy débil");
-        		}else if(textField_pass.getText().length()<4){
-        			progressBar.setValue(15);
-        			progressBar.setForeground(Color.red);
-        			progressBar.setString("Muy débil");
-        		}else if(textField_pass.getText().length()<5){
+        		}else if(textField_pass.getText().length()<6){
         			progressBar.setValue(20);
         			progressBar.setForeground(Color.red);
         			progressBar.setString("Muy débil");
-        		}else if(textField_pass.getText().length()<6){
-        			progressBar.setValue(25);
-        			progressBar.setForeground(Color.red);
-        			progressBar.setString("Muy débil");
-        		}else if(textField_pass.getText().length()<7){
-        			progressBar.setValue(30);
-        			progressBar.setForeground(Color.red);
-        			progressBar.setString("Muy débil");
-        		}else if(textField_pass.getText().length()<8){
-        			progressBar.setValue(35);
-        			progressBar.setForeground(Color.ORANGE);
-        			progressBar.setString("Débil");
-        		}else if(textField_pass.getText().length()<9){
-        			progressBar.setValue(40);
-        			progressBar.setForeground(Color.ORANGE);
-        			progressBar.setString("Débil");
-        		}else if(textField_pass.getText().length()<10){
-        			progressBar.setValue(45);
-        			progressBar.setForeground(Color.ORANGE);
-        			progressBar.setString("Débil");
-        		}else if(textField_pass.getText().length()<11){
-        			progressBar.setValue(50);
-        			progressBar.setForeground(Color.ORANGE);
-        			progressBar.setString("Débil");
         		}else if(textField_pass.getText().length()<12){
-        			progressBar.setValue(55);
+        			if(miHasEspecialCharacter.hasEspecial(textField_pass.getText())==true) {
+        				value = 55;
+        			}else {
+        				value = 35;
+        			}
+        			progressBar.setValue(value);
         			progressBar.setForeground(Color.ORANGE);
         			progressBar.setString("Débil");
-        		}else if(textField_pass.getText().length()<13){
-        			progressBar.setValue(60);
-        			progressBar.setForeground(Color.yellow);
-        			progressBar.setString("Aceptable");
-        		}else if(textField_pass.getText().length()<14){
-        			progressBar.setValue(66);
-        			progressBar.setForeground(Color.yellow);
-        			progressBar.setString("Aceptable");
-        		}else if(textField_pass.getText().length()<15){
-        			progressBar.setValue(71);
-        			progressBar.setForeground(Color.yellow);
-        			progressBar.setString("Aceptable");
         		}else if(textField_pass.getText().length()<16){
-        			progressBar.setValue(80);
+        			if(miHasEspecialCharacter.hasEspecial(textField_pass.getText())==true) {
+        				value =75;
+        			}else {
+        				value = 65;
+        			}
+        			progressBar.setValue(value);
         			progressBar.setForeground(Color.yellow);
         			progressBar.setString("Aceptable");
-        		}else if(textField_pass.getText().length()<17){
-        			progressBar.setValue(86);
-        			progressBar.setForeground(Color.yellow);
-        			progressBar.setString("Aceptable");
-        		}else if(textField_pass.getText().length()<18){
-        			progressBar.setValue(94);
-        			progressBar.setForeground(Color.green);
-        			progressBar.setString("Segura");
         		}else if(textField_pass.getText().length()<19){
+        			if(miHasEspecialCharacter.hasEspecial(textField_pass.getText())==true) {
+        				value = 100;
+        			}else {
+        				value =80 ;
+        			}
         			progressBar.setForeground(Color.green);
-        			progressBar.setValue(100);
+        			progressBar.setValue(value);
         			progressBar.setString("Segura");
         			progressBar.setToolTipText("No deberías de estar viendo esto");
         			
@@ -325,6 +342,7 @@ public class RegisterView extends JFrame implements ActionListener  {
 			}
 		});
 	}
+
 	
 	@Override
 	public void actionPerformed(ActionEvent arg0) {

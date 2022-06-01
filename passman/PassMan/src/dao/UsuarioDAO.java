@@ -5,7 +5,12 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.Random;
+
+import javax.swing.JOptionPane;
+
 import com.mysql.jdbc.PreparedStatement;
+import com.sun.webkit.ContextMenu.ShowContext;
+
 import utils.EmailSender;
 import modelos.Usuario;
 import utils.ReallyStrongSecuredPassword;
@@ -95,20 +100,26 @@ public class UsuarioDAO extends AbstractDAO {
 	public boolean registrarUsuario(String email, String password, String username) {
 		PreparedStatement pr;
 		EmailSender myEmailSender = new EmailSender();
-		try {
-			ReallyStrongSecuredPassword rsp = new ReallyStrongSecuredPassword();
-			pr = (PreparedStatement) super.cn.prepareStatement("insert into user" + "(email,password,username) values(?,?,?);");
-			pr.setString(1,email);
-			pr.setString(2,rsp.generateStorngPasswordHash(password));
-			pr.setString(3,username);
-			pr.executeUpdate();
-			myEmailSender.sendAnEmail(email);
-			return true;
-		}
-		catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
-			e.printStackTrace();
+		if(password.length()>7) {
+			try {
+				ReallyStrongSecuredPassword rsp = new ReallyStrongSecuredPassword();
+				pr = (PreparedStatement) super.cn.prepareStatement("insert into user" + "(email,password,username) values(?,?,?);");
+				pr.setString(1,email);
+				pr.setString(2,rsp.generateStorngPasswordHash(password));
+				pr.setString(3,username);
+				pr.executeUpdate();
+				myEmailSender.sendAnEmail(email);
+				JOptionPane.showMessageDialog(null, "Correct registration, welcome to our team!");
+				return true;
+			}
+			catch (SQLException | NoSuchAlgorithmException | InvalidKeySpecException e) {
+				e.printStackTrace();
+				return false;
+			}
+		}else {
+			JOptionPane.showMessageDialog(null, "Contraseña muy débil, introduce más caracteres");
 			return false;
-		}
+		}	
 	}
 	
 	

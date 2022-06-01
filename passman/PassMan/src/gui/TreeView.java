@@ -29,6 +29,7 @@ import javax.swing.tree.TreeCellRenderer;
 import javax.swing.tree.TreePath;
 import conexion.Conexion;
 import dao.UsuarioDAO;
+import tabla.CabeceraLateral;
 import utils.AES;
 import utils.JLabelLink;
 import utils.Scrapping;
@@ -162,14 +163,8 @@ public class TreeView extends JFrame{
 		JButton btnScrapper = new JButton("");
 		btnScrapper.setToolTipText("notificar cambios en la pagina web por medio del correo de esta cuenta");
 		btnScrapper.addActionListener(new ActionListener() {
-			public void actionPerformed(ActionEvent arg0) {
-				miScrap.interrupt();
-				if (scrappingNumber % 2 == 0) {
-					scrappingNumber++;
-					miScrap.scrap(correo,sitioweb);
-				}else {
-					System.out.println("Apagado");
-				}
+			public void actionPerformed(ActionEvent arg0) {			
+					miScrap.scrap(correo,sitioweb,titulo);	
 			}
 		});
 		btnScrapper.setFont(new Font("Yu Gothic UI", Font.BOLD, 11));
@@ -189,7 +184,10 @@ public class TreeView extends JFrame{
 	                (Transferable) new StringSelection(password_decrypt),
 	                null
 	        );
+			CabeceraLateral cabecera = new CabeceraLateral();
+			cabecera.main();
 			}
+			
 		});
 		btnCopiarC.setFont(new Font("Yu Gothic UI", Font.BOLD, 11));
 		btnCopiarC.setFocusPainted(false);
